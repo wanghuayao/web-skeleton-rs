@@ -1,0 +1,20 @@
+[package]
+name = "web-skeleton"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7.5"
+chrono = { version = "0.4.34", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.120"
+tokio = { version = "1.38.0", features = ["full"] }
+tower-http = {version="0.5.2", features = ["cors"]}
+config = "0.14.0"
+
+# auth
+bcrypt = "0.15.1"
+jsonwebtoken = "9.3.0"
+surrealdb = "1.5.4"
+once_cell = "1.19.0"
+serde_derive = "1.0.204"
