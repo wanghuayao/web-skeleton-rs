@@ -2,19 +2,21 @@ use axum::http::{
   header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
   HeaderValue, Method,
 };
-use config::Config;
+
 use tower_http::cors::CorsLayer;
-use web_skeleton::{app::create_router, common::AppConfig};
+use web_skeleton::{
+  app::create_router,
+  core::{AppConfig, AppRuntime},
+};
 
 #[tokio::main]
 async fn main() {
-  let config = Config::builder()
-    .add_source(config::File::with_name("web-skeleton-rs.yaml"))
-    .add_source(config::Environment::with_prefix("APP"))
-    .build()
-    .unwrap();
+  let app_runtime = AppRuntime::info();
+  
 
-  let config: AppConfig = config.try_deserialize().unwrap();
+  println!("app_runtime:{app_runtime:?}");
+
+  let config: AppConfig = app_runtime.conf;
 
   println!("config port:{:?} ", config.port);
   println!("config host:{:?}", config.host);

@@ -1,7 +1,8 @@
 use axum::{middleware, Router};
 
 use crate::{
-  common::auth_middleware, modules::{auth_router, todo_router}
+  core::auth_middleware,
+  modules::{auth_router, todo_router},
 };
 
 pub fn create_router() -> Router {
