@@ -1,11 +1,11 @@
 use axum::{middleware, Router};
 
 use crate::{
-  core::auth_middleware,
+  core::{auth_middleware, AppState},
   modules::{auth_router, todo_router},
 };
 
-pub fn create_router() -> Router {
+pub fn create_router() -> Router<AppState> {
   // create a router that will host both of our new routes once we create them
   let api_router = Router::new()
     .nest("/", todo_router())

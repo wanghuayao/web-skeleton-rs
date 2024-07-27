@@ -1,10 +1,14 @@
-use axum::Json;
+use axum::{extract::State, Json};
 
-use crate::core::AppError;
+use crate::core::{AppError, AppState};
 
 use super::todo_1_models::Todo;
 
-pub async fn list() -> Result<Json<Vec<Todo>>, AppError> {
+pub async fn list(
+  State(AppState { config }): State<AppState>,
+) -> Result<Json<Vec<Todo>>, AppError> {
+  println!("list config: {:?}", config);
+
   Err(AppError::NotFound)
 
   // let json_response = serde_json::json!({

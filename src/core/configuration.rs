@@ -1,6 +1,6 @@
 use config::Config;
 
-#[derive(Debug, Default, serde_derive::Deserialize, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, serde_derive::Deserialize, PartialEq, Eq)]
 pub struct AppConfig {
   pub host: String,
   pub port: String,
