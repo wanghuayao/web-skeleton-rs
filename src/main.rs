@@ -12,7 +12,6 @@ use web_skeleton::{
 #[tokio::main]
 async fn main() {
   let app_runtime = AppRuntime::info();
-  
 
   println!("app_runtime:{app_runtime:?}");
 
