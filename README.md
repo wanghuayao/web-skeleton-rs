@@ -23,7 +23,7 @@ APP_PORT=8080 APP_HOST=0.0.0.0 cargo watch -x 'run'
 ```
 
 ## Features
-- [ ] command line arg parse  
+- [x] command line arg parse  
 - [x] configuration (config.rs)  
 - [ ] logger  
 - [x] router structure
@@ -36,6 +36,9 @@ APP_PORT=8080 APP_HOST=0.0.0.0 cargo watch -x 'run'
 - [ ] Exception
 - [ ] Response data define
 - [ ] Open API Doc
-- [ ] AppState
+- [x] AppState
 
-
+## trace
+- traceId:
+- spanId:
+- parentSpanId: 

@@ -5,9 +5,9 @@ use crate::core::{AppError, AppState};
 use super::todo_1_models::Todo;
 
 pub async fn list(
-  State(AppState { config }): State<AppState>,
+  State(AppState { config: _ }): State<AppState>,
 ) -> Result<Json<Vec<Todo>>, AppError> {
-  println!("list config: {:?}", config);
+  // println!("list config: {:?}", config);
 
   Err(AppError::NotFound)
 
