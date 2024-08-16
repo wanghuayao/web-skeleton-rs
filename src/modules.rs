@@ -1,5 +1,5 @@
 mod auth;
-mod todos;
+mod todo;
 
 pub use auth::auth_0_router::auth_router;
-pub use todos::todo_0_router::todo_router;
+pub use todo::todo_0_router::todo_router;

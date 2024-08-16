@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, Utc};
 use serde::{Deserialize, Serialize};
 
 #[allow(non_snake_case)]
@@ -8,6 +8,6 @@ pub struct Todo {
   pub title: String,
   pub content: String,
   pub completed: Option<bool>,
-  pub createdAt: Option<DateTime<Local>>,
-  pub updatedAt: Option<DateTime<Local>>,
+  pub createdAt: Option<DateTime<Utc>>,
+  pub updatedAt: Option<DateTime<Utc>>,
 }

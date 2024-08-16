@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use axum::{
   extract::{MatchedPath, Request},
   http::{
@@ -9,7 +11,7 @@ use axum::{
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use web_skeleton::{
-  app::create_router,
+  app,
   core::{AppConfig, AppRuntime, AppState},
 };
 
@@ -18,14 +20,18 @@ async fn main() {
   let app_runtime = AppRuntime::info();
 
   let config: AppConfig = app_runtime.conf;
-
   let state = AppState::new(config);
 
+  // 改进环境变量读取失败的处理
+  let filter = match tracing_subscriber::EnvFilter::try_from_default_env() {
+    Ok(f) => f,
+    Err(_) => {
+      tracing_subscriber::EnvFilter::from_str("web_skeleton=debug,tower_http=debug").unwrap()
+    }
+  };
+
   tracing_subscriber::registry()
-    .with(
-      tracing_subscriber::EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| "web_skeleton=debug,tower_http=debug".into()),
-    )
+    .with(filter)
     .with(tracing_subscriber::fmt::layer())
     .init();
 
@@ -38,28 +44,34 @@ async fn main() {
   let trace = TraceLayer::new_for_http()
     .make_span_with(|req: &Request| {
       let method = req.method();
-      // let uri: &axum::http::Uri = req.uri();
-
-      // let matched_path = req
-      //   .extensions()
-      //   .get::<MatchedPath>()
-      //   .map(|matched_path| matched_path.as_str());
-
       let path = if let Some(path) = req.extensions().get::<MatchedPath>() {
         path.as_str()
       } else {
-        req.uri().path()
+        // 确保请求路径的准确性
+        req
+          .uri()
+          .path_and_query()
+          .map_or_else(|| "", |pq| pq.path())
       };
 
       tracing::debug_span!("req",  %method,  %path )
     })
-    // By default `TraceLayer` will log 5xx responses but we're doing our specific
-    // logging of errors so disable that
     .on_failure(());
 
-  let app = create_router().layer(trace).layer(cors).with_state(state);
+  app::init().await;
 
-  let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+  let app = app::create_router()
+    .layer(trace)
+    .layer(cors)
+    .with_state(state);
+
+  let listener = match tokio::net::TcpListener::bind("0.0.0.0:8080").await {
+    Ok(l) => l,
+    Err(e) => {
+      tracing::error!("Failed to bind TCP listener: {}", e);
+      std::process::exit(1);
+    }
+  };
 
   let addr = listener.local_addr().unwrap();
   tracing::info!("🚀 Server started successfully, listen: on {}", addr);
